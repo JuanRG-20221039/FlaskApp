@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Clasificador de Insectos</title>
+  <title>Clasificador de Flores Iris</title>
   <script>
-    function clasificarInsecto(event) {
+    function clasificarFlor(event) {
       event.preventDefault();
 
-      const abdomen = document.getElementById('abdomen').value;
-      const antena = document.getElementById('antena').value;
+      const sepalLength = parseFloat(document.getElementById('sepal_length').value);
+      const sepalWidth = parseFloat(document.getElementById('sepal_width').value);
+      const petalLength = parseFloat(document.getElementById('petal_length').value);
+      const petalWidth = parseFloat(document.getElementById('petal_width').value);
 
       fetch('/predict', {
         method: 'POST',
@@ -15,7 +17,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          features: [parseFloat(abdomen), parseFloat(antena)]
+          features: [sepalLength, sepalWidth, petalLength, petalWidth]
         })
       })
       .then(response => response.json())
@@ -23,7 +25,7 @@
         if (data.error) {
           document.getElementById('resultado').innerText = 'Error: ' + data.error;
         } else {
-          document.getElementById('resultado').innerText = 'El insecto fue clasificado como: ' + data.prediction;
+          document.getElementById('resultado').innerText = 'La flor fue clasificada como: ' + data.prediction;
         }
       })
       .catch(error => {
@@ -34,13 +36,19 @@
   </script>
 </head>
 <body>
-  <h1>Clasificador de Insectos</h1>
-  <form id="formulario" onsubmit="clasificarInsecto(event)">
-    <label for="abdomen">Longitud del Abdomen:</label>
-    <input type="text" id="abdomen" name="abdomen"><br><br>
+  <h1>Clasificador de Flores Iris</h1>
+  <form id="formulario" onsubmit="clasificarFlor(event)">
+    <label for="sepal_length">Longitud del Sépalo (cm):</label>
+    <input type="text" id="sepal_length" name="sepal_length"><br><br>
 
-    <label for="antena">Longitud de las Antenas:</label>
-    <input type="text" id="antena" name="antena"><br><br>
+    <label for="sepal_width">Ancho del Sépalo (cm):</label>
+    <input type="text" id="sepal_width" name="sepal_width"><br><br>
+
+    <label for="petal_length">Longitud del Pétalo (cm):</label>
+    <input type="text" id="petal_length" name="petal_length"><br><br>
+
+    <label for="petal_width">Ancho del Pétalo (cm):</label>
+    <input type="text" id="petal_width" name="petal_width"><br><br>
 
     <input type="submit" value="Enviar">
   </form>
