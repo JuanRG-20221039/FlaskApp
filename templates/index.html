@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Clasificador de Flores Iris</title>
+  <title>Clasificador de Insectos</title>
   <script>
-    function clasificarFlor(event) {
+    function clasificarInsecto(event) {
       event.preventDefault();
 
-      const sepalLength = parseFloat(document.getElementById('sepal_length').value);
-      const sepalWidth = parseFloat(document.getElementById('sepal_width').value);
-      const petalLength = parseFloat(document.getElementById('petal_length').value);
-      const petalWidth = parseFloat(document.getElementById('petal_width').value);
+      const abdomen = parseFloat(document.getElementById('abdomen').value);
+      const antena  = parseFloat(document.getElementById('antena').value);
 
       fetch('/predict', {
         method: 'POST',
@@ -17,42 +15,37 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          features: [sepalLength, sepalWidth, petalLength, petalWidth]
+          features: [abdomen, antena]
         })
       })
-      .then(response => response.json())
+      .then(resp => resp.json())
       .then(data => {
         if (data.error) {
           document.getElementById('resultado').innerText = 'Error: ' + data.error;
         } else {
-          document.getElementById('resultado').innerText = 'La flor fue clasificada como: ' + data.prediction;
+          document.getElementById('resultado').innerText = 
+            'El insecto es un ' + data.prediction;
         }
       })
-      .catch(error => {
-        document.getElementById('resultado').innerText = 'Error en la solicitud.';
-        console.error('Error:', error);
+      .catch(err => {
+        document.getElementById('resultado').innerText = 'Error en la petición.';
+        console.error(err);
       });
     }
   </script>
 </head>
 <body>
-  <h1>Clasificador de Flores Iris</h1>
-  <form id="formulario" onsubmit="clasificarFlor(event)">
-    <label for="sepal_length">Longitud del Sépalo (cm):</label>
-    <input type="text" id="sepal_length" name="sepal_length"><br><br>
+  <h1>Clasificador de Insectos</h1>
+  <form onsubmit="clasificarInsecto(event)">
+    <label for="abdomen">Longitud del Abdomen:</label>
+    <input type="number" step="any" id="abdomen" required><br><br>
 
-    <label for="sepal_width">Ancho del Sépalo (cm):</label>
-    <input type="text" id="sepal_width" name="sepal_width"><br><br>
+    <label for="antena">Longitud de la Antena:</label>
+    <input type="number" step="any" id="antena" required><br><br>
 
-    <label for="petal_length">Longitud del Pétalo (cm):</label>
-    <input type="text" id="petal_length" name="petal_length"><br><br>
-
-    <label for="petal_width">Ancho del Pétalo (cm):</label>
-    <input type="text" id="petal_width" name="petal_width"><br><br>
-
-    <input type="submit" value="Enviar">
+    <button type="submit">Clasificar</button>
   </form>
 
-  <p id="resultado"></p>
+  <p id="resultado" style="font-weight:bold;margin-top:1em;"></p>
 </body>
 </html>
